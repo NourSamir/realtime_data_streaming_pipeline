@@ -1,0 +1,67 @@
+version: "2"
+
+services:
+  # ######## ZooKeeper to manage Kafka ###########
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - pipeline_network
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+
+  # ######## Kafka ###########
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    ports:
+      - '9092:9092'
+      - '9090:9090'
+    environment:
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CFG_LISTENERS: INSIDE://:9090,OUTSIDE://:9092
+      KAFKA_CFG_ADVERTISED_LISTENERS: INSIDE://kafka:9090,OUTSIDE:localhost//:9092
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: CLIENT
+      # KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      ALLOW_ANONYMOUS_LOGIN: "yes" 
+      KAFKA_CFG_CREATE_TOPICS: 
+        "data:5:1,\
+         intro:1:1"
+    depends_on:
+      - zookeeper
+    networks:
+      - pipeline_network
+
+  # ######## Kafka UI, Mentor brokers & topics #########
+  kafadrop:
+    image: 'obsidiandynamics/kafdrop:latest'
+    container_name: kafadrop
+    restart: "no"
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:9090"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    depends_on:
+      - kafka
+    networks:
+      - pipeline_network
+
+  # ############# Redis, in-memory key-valye storage ############
+  redis:
+    image: 'bitnami/redis:latest'
+    container_name: redis
+    ports:
+      - "6379:6379"
+    environment:
+      ALLOW_EMPTY_PASSWORD: 'yes'
+    networks:
+      - pipeline_network
+
+networks:
+  pipeline_network:
+    driver: bridge
