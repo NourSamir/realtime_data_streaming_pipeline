@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
 
-KAFKA_INPUT_TOPICS = ['raw_events']
+import os
+from dotenv import load_dotenv
 
-KAFKA_OUTPUT_TOPIC = 'processed_events'
+load_dotenv()
+
+KAFKA_INPUT_TOPICS = [os.getenv('KAFKA_RAW_DATA_TOPIC', '')]
+
+KAFKA_OUTPUT_TOPIC = os.getenv('KAFKA_PROCESSED_DATA_TOPIC', 'processed_events')

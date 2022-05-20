@@ -1,41 +1,14 @@
+# -*- coding: utf-8 -*-
 
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
-REDIS_PASSWORD = None
-REDIS_DB = 0
+import os
+from dotenv import load_dotenv
 
-x = {
-   "user_id": "228f56b6-6d5e-4102-9a8e-5a2ccfb582f9",
-   "hotel_id": "9089",
-   "search_timestamp": 1652886692.611618,
-   "advertisers": [
-      "Amoma",
-      "Mercure",
-      "expedia",
-      "booking.com",
-      "Tui.com",
-       "Nour.com"
-   ],
-   "min_offer": {
-      "price": 8230,
-      "advertiser": "Amoma"
-   }
-}
+load_dotenv()
 
-y = {
-   "user_id": "228f56b6-6d5e-4102-9a8e-5a2ccfb582f9",
-   "hotel_id": "9089",
-   "search_timestamp": 1652886692.611618,
-   "advertisers": [
-      "Amoma",
-      "Mercure",
-      "expedia",
-      "booking.com",
-      "Tui.com",
-       "Nour.com"
-   ],
-   "min_offer": {
-      "price": 10,
-      "advertiser": "Nour"
-   }
-}
+REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+
+REDIS_PORT = os.getenv('REDIS_PORT', 6379)
+
+REDIS_DB = os.getenv('REDIS_DB', 0)
+
+REDIS_PASSWORD = None if os.getenv('REDIS_PASSWORD') == 'None' else ''

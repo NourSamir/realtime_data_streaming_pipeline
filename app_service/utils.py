@@ -1,10 +1,15 @@
+# -*- coding: utf-8 -*-
+
 import json
+from dotenv import load_dotenv
 from app_service.app import redis_session
 
-user_dict_name = 'users'
-hotels_dict_name = 'hotels'
-advertisers_dict_name = 'advertisers'
-hotels_min_offers_dict_name = 'hotels_min_offers'
+load_dotenv()
+
+user_dict_name = os.getenv('REDIS_USERS_DICT_NAME', 'users')
+hotels_dict_name = os.getenv('REDIS_HOTELS_DICT_NAME', 'hotels')
+advertisers_dict_name = os.getenv('REDIS_ADVERTISERS_DICT_NAME', 'advertisers')
+hotels_min_offers_dict_name = os.getenv('REDIS_HOTELS_MIN_OFFER_DICT_NAME', 'hotels_min_offers')
 
 def get_users():
     users = redis_session.get_dict(user_dict_name)
