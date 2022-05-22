@@ -4,7 +4,7 @@ from producer_app.configs import *
 
 def main():
     producer = Producer()
-    raw_data_generator = DataGenerator(file_path='search_results_data.txt')
+    raw_data_generator = DataGenerator()
     for message in raw_data_generator.randomly_generate_data():
         producer.push_to_topic(topic_name=KAFKA_TOPIC_NAME, message=message)
 

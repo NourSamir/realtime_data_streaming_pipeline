@@ -2,11 +2,10 @@ import re
 import json
 import random
 from datetime import datetime
-
+from producer_app.configs import RAW_DATA_FILE_PATH
 
 class DataGenerator:
-    def __init__(self, file_path):
-        self.file_path = file_path
+    def __init__(self):
         self.data = self._load_data_from_file()
 
     def _load_data_from_file(self):
@@ -20,7 +19,7 @@ class DataGenerator:
                 list: a python list that represent the search results such that each element
                 is a user search results for multiple hotels
         """
-        with open(self.file_path, 'r') as raw_data:
+        with open(RAW_DATA_FILE_PATH, 'r') as raw_data:
             data = [line.strip() for idx, line in enumerate(raw_data)]
 
         return data
