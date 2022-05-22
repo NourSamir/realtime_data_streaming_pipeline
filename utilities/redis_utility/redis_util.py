@@ -1,4 +1,5 @@
 from redis import Redis
+from utilities.logging_utility import logger
 from utilities.redis_utility.configs import *
 
 class RedisUtility:
@@ -10,6 +11,28 @@ class RedisUtility:
             password=REDIS_PASSWORD,
             decode_responses=True
         )
+
+        self.init_redis_dicts()
+
+    def init_redis_dicts(self):
+        """
+            Summary:
+                Init N empty redis dictionaries
+            Description:
+                Init 4 empty redis dictionaries (users, hotels, advertisers, hotels_min_offers) if these 
+                dictionaries have been created before then skip.
+            Parameters:
+            Returns:
+        """
+        
+        logger.info(msg=f'[RedisUtility.init_redis_dicts]: Start init redis dictionaries')
+        for dict_name in REDIS_DICT_NAMES:
+            if self.is_dict_exist(dict_name):
+                logger.info(msg=f'[RedisUtility.init_redis_dicts]: Redis dict {dict_name} exists')
+                continue
+            else:
+                self.init_empty_dict(dict_name)
+                logger.info(msg=f'[RedisUtility.init_redis_dicts]: Redis dict {dict_name} created')
 
     def init_empty_dict(self, dict_name):
         # initial_value = {'_trick': None}
@@ -33,6 +56,7 @@ class RedisUtility:
 
     def get_dict(self, dict_name):
         _dict = self.client.hgetall(dict_name)
+        del _dict['_trick']
         # return json.loads(_dict)
         return _dict
 

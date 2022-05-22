@@ -25,25 +25,6 @@ class MetricsFlow:
         self.data_consumer = Consumer()
         self.rds = RedisUtility()
 
-    def init_redis_dicts(self):
-        """
-            Summary:
-                Init N empty redis dictionaries
-            Description:
-                Init 4 empty redis dictionaries (users, hotels, advertisers, hotels_min_offers) if these 
-                dictionaries have been created before then skip.
-            Parameters:
-            Returns:
-        """
-        logger.info(msg=f'[MetricsFlow.init_redis_dicts]: Start init redis dictionaries')
-        for dict_name in REDIS_DICT_NAMES:
-            if self.rds.get_dict(dict_name):
-                logger.info(msg=f'[MetricsFlow.init_redis_dicts]: Redis dict {dict_name} exists')
-                continue
-            else:
-                self.rds.init_empty_dict(dict_name)
-                logger.info(msg=f'[MetricsFlow.init_redis_dicts]: Redis dict {dict_name} created')
-
     def get_data(self):
         """
             Summary:
@@ -187,7 +168,6 @@ class MetricsFlow:
         Returns:
         """
         logger.info(msg=f'[MetricsFlow.run]: Run metrics calculation flow')
-        self.init_redis_dicts()
         data = self.get_data()
         logger.info(msg='[MetricFlow.run]: Data being processed and update redis dictionaries')
         for message in data:
